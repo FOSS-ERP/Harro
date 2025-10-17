@@ -14,5 +14,10 @@ frappe.ui.form.on("BOM Creator", {
                 }
             }
         });
+    },
+    refresh:function(frm){
+        if(frm.doc.items.length > 0){
+            frm.set_df_property("custom_add_bom_items","hidden", 1)
+        }
     }
 });
