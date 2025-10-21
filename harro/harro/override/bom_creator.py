@@ -7,7 +7,7 @@ class CustomBOMCreator(BOMCreator):
 	def enqueue_create_boms(self):
 		frappe.enqueue(
 			self.create_boms,
-			queue="long",
+			queue="default",
 			timeout=7200,
 			is_async=True,
 		)
