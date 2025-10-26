@@ -153,6 +153,11 @@ override_doctype_class = {
 # 		"on_trash": "method"
 # 	}
 # }
+doc_events = {
+    "Work Order": {
+        "after_insert": "harro.harro.docevents.work_order.enqueue_fetch_row_material"
+    }
+}
 
 # Scheduled Tasks
 # ---------------

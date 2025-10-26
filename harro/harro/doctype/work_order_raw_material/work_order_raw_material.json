@@ -1,0 +1,102 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-10-25 17:03:24.918517",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item",
+  "column_break_indo",
+  "item_name",
+  "section_break_pfjl",
+  "description",
+  "section_break_xeyt",
+  "bom_qty",
+  "bom_uom",
+  "column_break_zmod",
+  "required_qty",
+  "in_stock_qty",
+  "enough_parts_to_build"
+ ],
+ "fields": [
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "bom_qty",
+   "fieldtype": "Float",
+   "in_standard_filter": 1,
+   "label": "BOM Qty"
+  },
+  {
+   "fieldname": "bom_uom",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "BOM Uom"
+  },
+  {
+   "fieldname": "required_qty",
+   "fieldtype": "Float",
+   "in_standard_filter": 1,
+   "label": "Required Qty"
+  },
+  {
+   "fieldname": "in_stock_qty",
+   "fieldtype": "Float",
+   "in_standard_filter": 1,
+   "label": "In Stock QTY"
+  },
+  {
+   "fieldname": "enough_parts_to_build",
+   "fieldtype": "Float",
+   "in_standard_filter": 1,
+   "label": "Enough Parts to Build"
+  },
+  {
+   "fieldname": "column_break_indo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_pfjl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_xeyt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_zmod",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-10-25 20:46:56.013273",
+ "modified_by": "Administrator",
+ "module": "Harro",
+ "name": "Work Order Raw Material",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
