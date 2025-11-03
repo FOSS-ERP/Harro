@@ -93,15 +93,15 @@ def get_mapped_subcontracting_order(source_name, target_doc=None):
 def validate(self, method):
     for item in self.items:
         if self.is_subcontracted and frappe.db.get_value("Item", item.fg_item, "has_serial_no") and not item.serial_no:
-            frappe.throw(f"Row {item.idx}: Update the serial no for item <b>{get_link_to_form("Item", item.fg_item)}<b>.")
-        if not self.is_subcontracted and frappe.db.get_value("Item", item.item_code, "has_serial_no") and not item.serial_no:
-            frappe.throw(f"Row {item.idx}: Update the serial no for item <b>{get_link_to_form("Item", item.item_code)}<b>.")
+            frappe.throw(f"Row {item.idx}: Update the serial no for item <b>{get_link_to_form('Item', item.fg_item)}<b>.")
+        if not self.is_subcontracted and frappe.db.get_value('Item', item.item_code, 'has_serial_no') and not item.serial_no:
+            frappe.throw(f"Row {item.idx}: Update the serial no for item <b>{get_link_to_form('Item', item.item_code)}<b>.")
         
             
             
         if item.serial_no:
             # Replace commas and newlines with spaces, then split
-            serial_text = item.serial_no.replace(',', ' ').replace('\n', ' ')
+            serial_text = item.serial_no.replace(',', ' ').replace('\n', '   ')
             serial_list = [s.strip() for s in serial_text.split(' ') if s.strip()]
             serial_count = len(serial_list)
 
