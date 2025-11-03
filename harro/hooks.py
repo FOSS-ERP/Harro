@@ -156,6 +156,9 @@ override_doctype_class = {
 doc_events = {
     "Work Order": {
         "after_insert": "harro.harro.docevents.work_order.enqueue_fetch_row_material"
+    },
+    "Purchase Order" : {
+        "validate" : "harro.harro.docevents.purchase_order.validate"
     }
 }
 
@@ -188,9 +191,9 @@ doc_events = {
 # Overriding Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "harro.event.get_events"
-# }
+override_whitelisted_methods = {
+	"erpnext.buying.doctype.purchase_order.purchase_order.make_subcontracting_order": "harro.harro.docevents.purchase_order.make_subcontracting_order"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
