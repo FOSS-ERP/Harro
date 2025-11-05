@@ -25,15 +25,15 @@ def calculate_project_working_hours(project):
     current_actule_manufacturing_hours = frappe.db.get_value("Project", project, "actual_manufacturing_hours") or 0
 
     if operation_wise_time.get("Mechanical Operation"):
-        frappe.db.set_value("Project", project, "actual_mechanical_assembly", operation_wise_time.get("Mechanical Operation")/60)
+        frappe.db.set_value("Project", project, "actual_mechanical_assembly", round(operation_wise_time.get("Mechanical Operation")/60, 2))
         
     if operation_wise_time.get("Electrical Operation"):
-        frappe.db.set_value("Project", project, "actual_electrical_assembly", operation_wise_time.get("Electrical Operation")/60)
+        frappe.db.set_value("Project", project, "actual_electrical_assembly", round(operation_wise_time.get("Electrical Operation")/60, 2))
     
     actual_mechanical_assembly = flt(operation_wise_time.get("Mechanical Operation")) or 0
     actual_electrical_assembly = flt(operation_wise_time.get("Electrical Operation")) or 0
 
-    current_actule_manufacturing_hours = flt(actual_mechanical_assembly) + flt(actual_electrical_assembly) + flt(current_actule_manufacturing_hours)
+    current_actule_manufacturing_hours = round(flt(actual_mechanical_assembly) + flt(actual_electrical_assembly) + flt(current_actule_manufacturing_hours), 2)
 
     frappe.db.set_value("Project", project, "actual_manufacturing_hours", current_actule_manufacturing_hours/60)
     
