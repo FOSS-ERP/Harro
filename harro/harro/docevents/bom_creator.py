@@ -30,10 +30,15 @@ def extract_bom_item_data(file_path, bom_c):
         artikel = row.get("Artikel")
         baugruppe = row.get("Baugruppe")
         menge = row.get("Menge")
+        mengeneinheit = row.get("Mengeneinheit")
+        uom = None
+        if mengeneinheit:
+            if stock_uom := frappe.db.exists("UOM", {"custom_german_uom" : mengeneinheit}):
+                uom = stock_uom
 
         # Create Item if it doesn't exist
         if not frappe.db.exists("Item", artikel):
-            create_item(artikel)
+            create_item(artikel, uom)
         if not frappe.db.exists("Item", baugruppe):
             create_item(baugruppe)
 
@@ -58,11 +63,12 @@ def extract_bom_item_data(file_path, bom_c):
     doc.save()
 
 
-def create_item(item):
+def create_item(item, uom=None):
     frappe.get_doc({
         "doctype" : "Item",
         "item_code" : item,
         "item_group" : "Production Part",
+        "stock_uom" : uom or "Nos"
     }).insert()
     
 def create_item_group():
@@ -74,11 +80,12 @@ def create_item_group():
         }).insert()
     
 
-def create_item(item):
+def create_item(item, uom=None):
     frappe.get_doc({
         "doctype" : "Item",
         "item_code" : item,
         "item_group" : "Production Part",
+        "stock_uom" : uom or "Nos"
     }).insert()
     
 def create_item_group():
