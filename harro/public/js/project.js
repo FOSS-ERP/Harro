@@ -74,7 +74,7 @@ function renderAllSpeedometers(frm) {
 
 function renderSpeedometer(frm, set) {
     const { planned, actual, index } = set;
-    const percentage = planned ? Math.min((actual / planned) * 100, 150) : 0;
+    const percentage = planned ? Math.min((actual / planned) * 100, 200) : 0;
 
     const ctx = document.getElementById(`speed_chart_${index}_${frm.doc.name}`);
     if (!ctx) return;
