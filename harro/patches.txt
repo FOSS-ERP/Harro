@@ -8,3 +8,4 @@ harro.patches.create_serial_no_field_in_po
 harro.patches.create_table_for_row_material
 harro.patches.serial_no_for_subcontracting_order
 harro.patches.update_field_configration
+harro.patches.create_configration_field
