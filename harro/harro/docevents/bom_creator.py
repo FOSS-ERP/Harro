@@ -11,7 +11,11 @@ def extract_bom_item_data(file_path, bom_c):
         frappe.throw("Please upload a file first.")
 
     # Read Excel
-    public_file_path = frappe.get_site_path("public", file_path.lstrip("/"))
+    if "private" in file_path:
+        file_path = file_path.replace("/private", '')
+        public_file_path = frappe.get_site_path("private", file_path.lstrip("/"))
+    else:
+        public_file_path = frappe.get_site_path("public", file_path.lstrip("/"))
     workbook = load_workbook(filename=public_file_path, data_only=True)
     sheet = workbook.active
     headers = [cell.value for cell in sheet[1] if cell.value]
@@ -68,7 +72,8 @@ def create_item(item, uom=None):
         "doctype" : "Item",
         "item_code" : item,
         "item_group" : "Production Part",
-        "stock_uom" : uom or "Nos"
+        "stock_uom" : uom or "Nos",
+        "valuation_rate" : 0
     }).insert()
     
 def create_item_group():
@@ -79,20 +84,4 @@ def create_item_group():
             "item_group_name" : "Production Part"
         }).insert()
     
-
-def create_item(item, uom=None):
-    frappe.get_doc({
-        "doctype" : "Item",
-        "item_code" : item,
-        "item_group" : "Production Part",
-        "stock_uom" : uom or "Nos"
-    }).insert()
-    
-def create_item_group():
-    if not frappe.db.exists("Item Group", "Production Part"):
-        frappe.get_doc({
-            "doctype" : "Item Group",
-            "parent_item_group" : "All Item Groups",
-            "item_group_name" : "Production Part"
-        }).insert()
     
