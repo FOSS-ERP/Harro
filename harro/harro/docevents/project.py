@@ -13,6 +13,12 @@ def calculate_project_working_hours(project):
     )
 
     # Dictionary to hold operation-wise total minutes
+    if not job_cards:
+        frappe.db.set_value("Project", project, "actual_mechanical_assembly", 0)
+        frappe.db.set_value("Project", project, "actual_electrical_assembly", 0)
+        frappe.db.set_value("Project", project, "actual_manufacturing_hours", 0)
+        return
+
     operation_wise_time = {}
 
     for jc in job_cards:
@@ -26,7 +32,7 @@ def calculate_project_working_hours(project):
 
     if operation_wise_time.get("Mechanical Operation"):
         frappe.db.set_value("Project", project, "actual_mechanical_assembly", round(operation_wise_time.get("Mechanical Operation")/60, 2))
-        
+
     if operation_wise_time.get("Electrical Operation"):
         frappe.db.set_value("Project", project, "actual_electrical_assembly", round(operation_wise_time.get("Electrical Operation")/60, 2))
     
