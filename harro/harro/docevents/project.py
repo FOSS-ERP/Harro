@@ -90,7 +90,7 @@ def calculate_timesheet_hours(project):
 
     for row in timesheet_details:
         if field_mapping.get(row.activity_type):
-            frappe.db.set_value("Project", project, field_mapping.get(row.activity_type), row.hours)
+            frappe.db.set_value("Project", project, field_mapping.get(row.activity_type), round(row.hours, 2))
 
 
 
