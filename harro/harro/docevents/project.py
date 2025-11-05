@@ -41,7 +41,7 @@ def calculate_project_working_hours(project):
 
     current_actule_manufacturing_hours = round(flt(actual_mechanical_assembly) + flt(actual_electrical_assembly) + flt(current_actule_manufacturing_hours), 2)
 
-    frappe.db.set_value("Project", project, "actual_manufacturing_hours", current_actule_manufacturing_hours/60)
+    frappe.db.set_value("Project", project, "actual_manufacturing_hours", round(current_actule_manufacturing_hours/60, 2))
     
 
 
