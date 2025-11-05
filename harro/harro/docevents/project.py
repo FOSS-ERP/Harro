@@ -75,7 +75,7 @@ def calculate_timesheet_hours(project):
                                     From `tabTimesheet` as t
                                     Left Join `tabTimesheet Detail` as td ON td.parent = t.name
                                     Left Join `tabActivity Type` as at ON at.name = td.activity_type
-                                    Where t.parent_project = '{project}' and t.docstatus = 1 and at.custom_unproductive_work = 0
+                                    Where t.parent_project = '{project}' and t.docstatus = 1 
                                     Group By td.activity_type
 
                                         """, as_dict=True)
