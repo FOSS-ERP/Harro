@@ -169,7 +169,7 @@ doc_events = {
         "on_submit" : "harro.harro.docevents.timesheet.on_submit"
     },
     "Project" : {
-        "validate" : "harro.harro.docevents.timesheet.validate"
+        "validate" : "harro.harro.docevents.project.validate"
     }
 }
 
