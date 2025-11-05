@@ -2,7 +2,7 @@ import frappe
 from frappe.utils import flt
 
 def validate(self, method):
-    self.planned_manufacturing_hours = flt(self.planned_mechanical_assembly) + flt(self.planned_electrical_assembly)
+    self.planned_manufacturing_hours = round(flt(self.planned_mechanical_assembly) + flt(self.planned_electrical_assembly), 2)
 
 def calculate_project_working_hours(project):
     # Get all submitted job cards for the project
@@ -87,13 +87,12 @@ def calculate_timesheet_hours(project):
         field_mapping.update({
             row.name : row.custom_update_to_project_field
         })
+    if timesheet_details:
+        for row in timesheet_details:
+            if field_mapping.get(row.activity_type):
+                frappe.db.set_value("Project", project, field_mapping.get(row.activity_type), round(row.hours, 2))
+    else:
+        for row in field_to_update:
+            if field_mapping.get(row.name):
+                frappe.db.set_value("Project", project, field_mapping.get(row.name), 0)
 
-    for row in timesheet_details:
-        if field_mapping.get(row.activity_type):
-            frappe.db.set_value("Project", project, field_mapping.get(row.activity_type), round(row.hours, 2))
-
-
-
-    
-   
-    
