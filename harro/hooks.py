@@ -45,7 +45,8 @@ app_license = "mit"
 # include js in doctype views
 doctype_js = {
     "BOM Creator" : "public/js/bom_creator.js",
-    "Project" : "public/js/project.js"
+    "Project" : "public/js/project.js",
+    "Activity Type" : "public/js/activity_type.js"
     }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -163,6 +164,12 @@ doc_events = {
     },
     "Job Card" : {
         "on_submit" : "harro.harro.docevents.job_card.on_submit"
+    },
+    "Timesheet" : {
+        "on_submit" : "harro.harro.docevents.timesheet.on_submit"
+    },
+    "Project" : {
+        "validate" : "harro.harro.docevents.timesheet.validate"
     }
 }
 

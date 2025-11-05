@@ -1,8 +1,8 @@
 import frappe
 from frappe.utils import flt
 
-
-import frappe
+def validate(self, method):
+    self.planned_manufacturing_hours = flt(self.planned_mechanical_assembly) + flt(self.planned_electrical_assembly)
 
 def calculate_project_working_hours(project):
     # Get all submitted job cards for the project
@@ -25,17 +25,17 @@ def calculate_project_working_hours(project):
     current_actule_manufacturing_hours = frappe.db.get_value("Project", project, "actual_manufacturing_hours") or 0
 
     if operation_wise_time.get("Mechanical Operation"):
-        frappe.db.set_value("Project", project, "actual_mechanical_assembly", operation_wise_time.get("Mechanical Operation"))
+        frappe.db.set_value("Project", project, "actual_mechanical_assembly", operation_wise_time.get("Mechanical Operation")/60)
         
     if operation_wise_time.get("Electrical Operation"):
-        frappe.db.set_value("Project", project, "actual_electrical_assembly", operation_wise_time.get("Electrical Operation"))
+        frappe.db.set_value("Project", project, "actual_electrical_assembly", operation_wise_time.get("Electrical Operation")/60)
     
     actual_mechanical_assembly = flt(operation_wise_time.get("Mechanical Operation")) or 0
     actual_electrical_assembly = flt(operation_wise_time.get("Electrical Operation")) or 0
 
     current_actule_manufacturing_hours = flt(actual_mechanical_assembly) + flt(actual_electrical_assembly) + flt(current_actule_manufacturing_hours)
 
-    frappe.db.set_value("Project", project, "actual_manufacturing_hours", current_actule_manufacturing_hours)
+    frappe.db.set_value("Project", project, "actual_manufacturing_hours", current_actule_manufacturing_hours/60)
     
 
 
@@ -66,3 +66,34 @@ def get_effort_data(project):
         "actual_electrical_assembly": data.get("actual_electrical_assembly", 0),
     }
 
+
+
+def calculate_timesheet_hours(project):
+    timesheet_details = frappe.db.sql(f"""
+                                    
+                                    Select sum(td.hours) as hours , td.activity_type
+                                    From `tabTimesheet` as t
+                                    Left Join `tabTimesheet Detail` as td ON td.parent = t.name
+                                    Left Join `tabActivity Type` as at ON at.name = td.activity_type
+                                    Where t.parent_project = '{project}' and t.docstatus = 1 and at.custom_unproductive_work = 0
+                                    Group By td.activity_type
+
+                                        """, as_dict=True)
+        
+    field_to_update = frappe.db.get_all("Activity Type" , fields = ['name', 'custom_update_to_project_field'], filters={'custom_update_to_project_field' : ["!=", '']})
+
+    field_mapping = {}
+    for row in field_to_update:
+        field_mapping.update({
+            row.name : row.custom_update_to_project_field
+        })
+
+    for row in timesheet_details:
+        if field_mapping.get(row.activity_type):
+            frappe.db.set_value("Project", project, field_mapping.get(row.activity_type), row.hours)
+
+
+
+    
+   
+    
