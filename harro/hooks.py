@@ -46,7 +46,8 @@ app_license = "mit"
 doctype_js = {
     "BOM Creator" : "public/js/bom_creator.js",
     "Project" : "public/js/project.js",
-    "Activity Type" : "public/js/activity_type.js"
+    "Activity Type" : "public/js/activity_type.js",
+    "Job Card" : "public/js/job_card.js",
     }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
