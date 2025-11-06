@@ -1,7 +1,7 @@
 frappe.ui.form.on("BOM Creator", {
 	custom_add_bom_items : function(frm){
         frappe.call({
-            method: "harro.harro.docevents.bom_creator.extract_bom_item_data",
+            method: "harro.harro.docevents.bom_creator.execute_uploaded_file",
             args: { 
                 file_path : frm.doc.custom_input_bom_file,
                 bom_c : frm.doc.name

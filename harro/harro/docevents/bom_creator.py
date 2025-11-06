@@ -1,8 +1,12 @@
 import frappe
 from openpyxl import load_workbook
 
-
-
+@frappe.whitelist()
+def execute_uploaded_file(file_path, bom_c):
+    frappe.enqueue(
+            extract_bom_item_data, file_path=file_path, bom_c=bom_c, queue="long", enqueue_after_commit=True
+        )
+    
 @frappe.whitelist()
 def extract_bom_item_data(file_path, bom_c):
     doc = frappe.get_doc("BOM Creator", bom_c)
@@ -35,16 +39,19 @@ def extract_bom_item_data(file_path, bom_c):
         baugruppe = row.get("Baugruppe")
         menge = row.get("Menge")
         mengeneinheit = row.get("Mengeneinheit")
+        StrukturklasseKopf = row.get("StrukturklasseKopf")
+        StrukturklassePos = row.get("StrukturklassePos")
+
         uom = None
         if mengeneinheit:
             if stock_uom := frappe.db.exists("UOM", {"custom_german_uom" : mengeneinheit}):
                 uom = stock_uom
 
         # Create Item if it doesn't exist
-        if not frappe.db.exists("Item", artikel):
-            create_item(artikel, uom)
-        if not frappe.db.exists("Item", baugruppe):
-            create_item(baugruppe)
+        if not frappe.db.exists("Item", artikel, ):
+            create_item(artikel, row, uom, item_group=StrukturklassePos)
+        if not frappe.db.exists("Item", baugruppe ):
+            create_item(baugruppe, row, uom=None, item_group=StrukturklasseKopf)
 
         new_row = {
             "item_code": artikel,
@@ -67,14 +74,99 @@ def extract_bom_item_data(file_path, bom_c):
     doc.save()
 
 
-def create_item(item, uom=None):
-    frappe.get_doc({
-        "doctype" : "Item",
-        "item_code" : item,
-        "item_group" : "Production Part",
-        "stock_uom" : uom or "Nos",
-        "valuation_rate" : 0
-    }).insert()
+def create_item(item, row, uom=None, item_group="Production Part"):
+
+    if item_group_ := frappe.db.exists("Item Group", {"custom_german_name_of_item_group" : item_group}):
+       item_group = item_group_
+    else:
+        frappe.get_doc(
+            {
+                "item_group_name": item_group,
+                "custom_german_name_of_item_group" : item_group,
+                "parent_item_group": "All Item Groups",
+                "old_parent": "All Item Groups",
+                "doctype": "Item Group"
+            }
+        ).insert()
+
+    item_doc = frappe.get_doc({
+                "doctype" : "Item",
+                "item_code" : item,
+                "item_group" : item_group,
+                "stock_uom" : uom or "Nos",
+                "valuation_rate" : 0
+            })
+    
+    labels = [
+        "Baugruppe",
+        "Baugruppe HH_India",
+        "StrukturklasseKopf",
+        "Revision",
+        "Revision alt",
+        "Position",
+        "Position alt",
+        "Artikel",
+        "Artikel HH_India",
+        "StrukturklassePos",
+        "Revision Artikel",
+        "Artikel alt",
+        "Artikel alt HH_India",
+        "StrukturklassePos alt",
+        "Revision Artikel alt",
+        "Menge",
+        "Mengeneinheit",
+        "Menge alt",
+        "Mengeneinheit alt",
+        "initial",
+        "status",
+        "cHerstellernr",
+        "cHerstellerBez",
+        "cHerstellerBez2",
+        "cHerstellerBez3",
+        "cHerstellerBez4",
+        "cBestellnummer",
+        "iLieferant",
+        "cLieferantSuchbegriff",
+        "cLiefBez",
+        "cLiefBez2",
+        "cLiefBez3",
+        "cLiefBez4",
+        "cLiefBestellnummer",
+        "Baugruppe Bez1",
+        "Baugruppe Bez2",
+        "Baugruppe Bez3",
+        "Baugruppe Bez4",
+        "Baugruppe pruefplan",
+        "Baugruppe Werkstoff",
+        "Baugruppe Oberflaechenbehandlung",
+        "Baugruppe Rohteil",
+        "Baugruppe Schweissteil",
+        "Baugruppe Halbzeug",
+        "Artikel Bez1",
+        "Artikel Bez2",
+        "Artikel Bez3",
+        "Artikel Bez4",
+        "Artikel pruefplan",
+        "Artikel Werkstoff",
+        "Artikel Oberflaechenbehandlung",
+        "Artikel Rohteil",
+        "Artikel Schweissteil",
+        "Artikel Halbzeug",
+        "Stufe Baugruppenpos",
+        "HerstellerNr HH_India",
+        "sequenz",
+        "Anzahl",
+        "Menge Brutto",
+        "Gesamtmenge"
+    ]
+
+    for l in labels:
+        fieldname = make_fieldname(l)
+        item_doc.update({
+            fieldname : row.get(l)
+        })
+    item_doc.insert(ignore_permissions=True)
+
     
 def create_item_group():
     if not frappe.db.exists("Item Group", "Production Part"):
@@ -83,5 +175,7 @@ def create_item_group():
             "parent_item_group" : "All Item Groups",
             "item_group_name" : "Production Part"
         }).insert()
-    
+
+def make_fieldname(label):
+    return label.strip().lower().replace(" ", "_") 
     

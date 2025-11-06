@@ -1,6 +1,7 @@
 import frappe
 
 def execute():
+    return
     frappe.get_doc(
         {
             "is_system_generated":1,
