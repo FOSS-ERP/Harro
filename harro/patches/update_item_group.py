@@ -12,6 +12,22 @@ def execute():
         { "german_name" : "Fertigungsteil", "indian_name" : "Manufactured Part" },
     ]
 
+    meta = frappe.get_meta("Item Group")
+    if not meta.has_field("custom_german_name_of_item_group"):
+        frappe.get_doc(
+            {
+                "dt": "Item Group",
+                "fieldname": "custom_german_name_of_item_group",
+                "fieldtype": "Data",
+                "insert_after": "column_break_5",
+                "is_system_generated": 1,
+                "label": "German Name of Item Group",
+                "length": 0,
+                "name": "Item Group-custom_german_name_of_item_group",
+                "doctype": "Custom Field"
+                }
+        ).insert()
+
     for row in item_groups:
         if frappe.db.exists("Item Group", row.get("indian_name")):
             frappe.db.set_value("Item Group", row.get("indian_name"), "custom_german_name_of_item_group", row.get("german_name"))
