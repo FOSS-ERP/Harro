@@ -166,11 +166,13 @@ doc_events = {
     },
     "Job Card" : {
         "on_submit" : "harro.harro.docevents.job_card.on_submit",
-        "on_cancel" : "harro.harro.docevents.job_card.on_cancel"
+        "on_cancel" : "harro.harro.docevents.job_card.on_cancel",
+        "validate" : "harro.harro.docevents.job_card.validate",
     },
     "Timesheet" : {
         "on_submit" : "harro.harro.docevents.timesheet.on_submit",
         "on_cancel" : "harro.harro.docevents.timesheet.on_cancel",
+        "validate" : "harro.harro.docevents.timesheet.validate",
     },
     "Project" : {
         "validate" : "harro.harro.docevents.project.validate"

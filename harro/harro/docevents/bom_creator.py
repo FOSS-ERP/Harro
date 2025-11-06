@@ -96,6 +96,10 @@ def create_item(item, row, uom=None, item_group="Production Part"):
                 "stock_uom" : uom or "Nos",
                 "valuation_rate" : 0
             })
+
+    # if row.get("cHerstellername"):
+    #     if frappe.db.exists("Item Manufacturer", { "item_code" : item, "manufacturer" :  row.get("cHerstellername")}):
+    #         item_doc.custom_manufacturer = row.get("cHerstellername")
     
     labels = [
         "Baugruppe",
