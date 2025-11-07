@@ -1,4 +1,32 @@
 frappe.ui.form.on("Job Card", {
+    start_job: function (frm, status, employee) {
+        if (status == "Resume Job"){
+            frappe.call({
+                method: "harro.harro.docevents.job_card.resume_unproductive_log",
+                args : {
+                    to_time : frappe.datetime.now_datetime(),
+                    job_card : frm.doc.name
+                },
+                callback:(r)=>{
+                     const args = {
+                        job_card_id: frm.doc.name,
+                        start_time: frappe.datetime.now_datetime(),
+                        employees: employee,
+                        status: status,
+                    };
+                    frm.events.make_time_log(frm, args);
+                }
+            })
+        }else{
+            const args = {
+                job_card_id: frm.doc.name,
+                start_time: frappe.datetime.now_datetime(),
+                employees: employee,
+                status: status,
+            };
+            frm.events.make_time_log(frm, args);
+        }
+	},
     complete_job: function (frm, status, completed_qty) {
         if(status == 'On Hold'){
             let d = new frappe.ui.Dialog({
@@ -17,7 +45,7 @@ frappe.ui.form.on("Job Card", {
                     "options" : "Project",
                     "reqd" :  1,
                     "fieldtype" : "Link",
-                    "default" : frm.doc.name
+                    "default" : frm.doc.project
                 },
                 {
                     "fieldname" : "task",
@@ -36,11 +64,38 @@ frappe.ui.form.on("Job Card", {
             size: 'small', // small, large, extra-large 
             primary_action_label: 'Submit',
             primary_action(values) {
-                console.log(values);
-                d.hide();
+                let data = d.get_values();
+                let arg = {
+                    activity_type : data.activity_type,
+                    from_time : frappe.datetime.now_datetime(),
+                    project : data.project,
+                    task : data.task
+                }
+                frappe.call({
+                    method: "harro.harro.docevents.job_card.update_unproductive_log",
+                    args : {
+                        arg : arg,
+                        job_card : frm.doc.name
+                    },
+                    callback:(r)=>{
+                        frm.refresh_field("custom_unproductive_work_timelogs")
+                        const args = {
+                            job_card_id: frm.doc.name,
+                            complete_time: frappe.datetime.now_datetime(),
+                            status: status,
+                            completed_qty: completed_qty,
+                        };
+                        frm.events.make_time_log(frm, args);
+                        d.hide();
+                    }
+                })
+
+                
             }
         });
         d.show();
+        d.set_value("project", frm.doc.project)
+
         }else{
             const args = {
                 job_card_id: frm.doc.name,

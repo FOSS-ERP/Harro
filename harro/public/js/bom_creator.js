@@ -11,6 +11,7 @@ frappe.ui.form.on("BOM Creator", {
             callback(r) {
                 if (r.message) {
                     frm.reload_doc()
+                    frm.refresh_field("items")
                 }
             }
         });

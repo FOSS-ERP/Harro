@@ -11,3 +11,4 @@ harro.patches.create_configration_field
 harro.patches.update_field_configration
 harro.patches.update_item_group
 harro.patches.create_field_for_item_master
+harro.patches.job_card_field_remove_and_add
