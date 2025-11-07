@@ -1,11 +1,11 @@
 import frappe
 from openpyxl import load_workbook
 
-@frappe.whitelist()
-def execute_uploaded_file(file_path, bom_c):
-    frappe.enqueue(
-            extract_bom_item_data, file_path=file_path, bom_c=bom_c, queue="long", enqueue_after_commit=True
-        )
+# @frappe.whitelist()
+# def execute_uploaded_file(file_path, bom_c):
+#     frappe.enqueue(
+#             extract_bom_item_data, file_path=file_path, bom_c=bom_c, queue="long", enqueue_after_commit=True
+#         )
     
 @frappe.whitelist()
 def extract_bom_item_data(file_path, bom_c):
