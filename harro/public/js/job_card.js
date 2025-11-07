@@ -62,7 +62,7 @@ frappe.ui.form.on("Job Card", {
                 }
             ],
             size: 'small', // small, large, extra-large 
-            primary_action_label: 'Submit',
+            primary_action_label: 'Update Time Log',
             primary_action(values) {
                 let data = d.get_values();
                 let arg = {
