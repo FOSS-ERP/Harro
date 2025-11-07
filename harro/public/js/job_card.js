@@ -1,4 +1,10 @@
 frappe.ui.form.on("Job Card", {
+    setup:(frm)=>{
+        frm.set_df_property("custom_unproductive_work_timelogs", "cannot_add_rows", true);
+    },
+    refresh:(frm)=>{
+        frm.set_df_property("custom_unproductive_work_timelogs", "cannot_add_rows", true);
+    },
     start_job: function (frm, status, employee) {
         if (status == "Resume Job"){
             frappe.call({
