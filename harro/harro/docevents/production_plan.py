@@ -12,6 +12,7 @@ from frappe.utils import (
     comma_and,
     get_link_to_form,
     nowdate,
+    getdate
 )
 from erpnext.manufacturing.doctype.production_plan.production_plan import ProductionPlan
 from erpnext.manufacturing.report.bom_stock_report.bom_stock_report import get_bom_stock
@@ -40,6 +41,9 @@ class CustomProductionPlan(ProductionPlan):
             for item in report_items:
                 if not date_map.get(item):
                     date_map[item] = row.schedule_date
+                else:
+                    if getdate(date_map.get(item)) > getdate(row.schedule_date):
+                        date_map[item] = row.schedule_date
 
         for item in self.mr_items:
             item_doc = frappe.get_cached_doc("Item", item.item_code)
