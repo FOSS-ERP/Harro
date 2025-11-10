@@ -4,7 +4,6 @@ frappe.ui.form.on("Stock Entry", {
 	},
     items_on_form_rendered(frm){
        
-        console.log("hhhhhh")
         cur_frm.fields_dict["items"].grid.get_field("bin_location").get_query = function (doc) {
             return {
                 query: "harro.harro.docevents.stock_entry.get_bin_location",
@@ -16,30 +15,38 @@ frappe.ui.form.on("Stock Entry", {
 
 frappe.ui.form.on('Stock Entry Detail', {
     rack(frm, cdt, cdn) {
-        let row = locals[cdt][cdn];
-        // Refresh field so filter applies immediately
-        frm.fields_dict['items'].grid.get_field('bin_location').get_query = function(doc, cdt, cdn) {
-            let child = locals[cdt][cdn];
-            return {
-                filters: {
-                    rack_name: child.rack
-                }
-            };
-        };
-        frm.refresh_field('items');
+        let count = 0 
+        setInterval(() => {
+            if (count < 6){
+                frm.set_query("bin_location", "items", function () {
+                    let child = locals[cdt][cdn];
+                    return {
+                        filters: {
+                            rack_name: child.rack
+                        },
+                    };
+                });
+                frm.refresh_field('items');
+                count++;
+            }
+        }, 100);
+        // Refresh field so filter applies immediately     
     },
     to_rack(frm, cdt, cdn) {
-        let row = locals[cdt][cdn];
-        // Refresh field so filter applies immediately
-        frm.fields_dict['items'].grid.get_field('to_bin_location').get_query = function(doc, cdt, cdn) {
-            let child = locals[cdt][cdn];
-            return {
-                filters: {
-                    rack_name: child.rack
-                }
-            };
-        };
-        frm.refresh_field('items');
+        let count = 0 
+        setInterval(() => {
+            if (count < 6){
+                frm.set_query("to_bin_location", "items", function () {
+                    let child = locals[cdt][cdn];
+                    return {
+                        filters: {
+                            rack_name: child.rack
+                        },
+                    };
+                });
+                frm.refresh_field('items');
+                count++;
+            }
+        }, 100);
     },
-
 });
