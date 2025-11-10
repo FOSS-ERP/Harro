@@ -79,19 +79,20 @@ function renderSpeedometer(frm, set) {
     const ctx = document.getElementById(`speed_chart_${index}_${frm.doc.name}`);
     if (!ctx) return;
 
-    // Color zones
-    const actualColor =
-        percentage < 100 ? "#1abc9c" :
-        percentage <= 150 ? "#f1c40f" :
-        "#e74c3c";
-    console.log(percentage)
-    // Planned arc (green→yellow→red) + Actual overlay
+    // Determine actual arc color based on percentage
+    let actualColor;
+    if (percentage < 80) actualColor = "#2ecc71";     // Green
+    else if (percentage < 90) actualColor = "#f1c40f"; // Yellow
+    else if (percentage <= 100) actualColor = "#e67e22"; // Orange
+    else actualColor = "#e74c3c";                     // Red
+
+    // Planned zone color bands (Green → Yellow → Orange → Red)
     const data = {
         datasets: [
             {
                 // Planned zones
-                data: [50, 25, 25],
-                backgroundColor: ["#2ecc71", "#ffe733", "#e74c3c"],
+                data: [40, 5, 5, 50], // relative segments for visual proportion
+                backgroundColor: ["#2ecc71", "#f1c40f", "#e67e22", "#e74c3c"],
                 borderWidth: 0,
                 circumference: 180,
                 rotation: 270,
@@ -103,7 +104,7 @@ function renderSpeedometer(frm, set) {
                 backgroundColor: [actualColor, "rgba(0,0,0,0)"],
                 borderWidth: 0,
                 circumference: 180,
-                rotation: 270,
+                rotation:270,
                 cutout: "75%",
             }
         ]
@@ -130,3 +131,4 @@ function renderSpeedometer(frm, set) {
     document.getElementById(`speed_value_${index}_${frm.doc.name}`).innerHTML =
         `${percentage.toFixed(1)}%<br>(${actual || 0} / ${planned || 0} hrs)`;
 }
+
