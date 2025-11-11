@@ -11,6 +11,16 @@ def create_custom_fields_on_migrate():
                 "fieldtype" : "Link",
                 "options" : "Employee",
             }
+        ],
+        "Timesheet" : [
+            {
+                "insert_after" : "parent_project",
+                "fieldname" : "job_card",
+                "label" : "Job Card",
+                "fieldtype" : "Link",
+                "options" : "Job Card",
+                "read_only" :  1
+            }
         ]
     }
 
