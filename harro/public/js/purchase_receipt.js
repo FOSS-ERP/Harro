@@ -4,12 +4,6 @@ frappe.ui.form.on("Purchase Receipt", {
 	},
     items_on_form_rendered(frm){
        
-        cur_frm.fields_dict["items"].grid.get_field("bin_location").get_query = function (doc) {
-            return {
-                query: "harro.harro.docevents.stock_entry.get_bin_location",
-                filters: { rack: d.rack },
-            };
-        };
     }
 })
 
