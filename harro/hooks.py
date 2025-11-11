@@ -48,7 +48,8 @@ doctype_js = {
         "Project" : "public/js/project.js",
         "Activity Type" : "public/js/activity_type.js",
         "Job Card" : "public/js/job_card.js",
-        "Stock Entry" : "public/js/stock_entry.js"
+        "Stock Entry" : "public/js/stock_entry.js",
+        "Purchase Receipt" : "public/js/purchase_receipt.js",
     }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -61,7 +62,7 @@ doctype_js = {
 
 # Home Pages
 # ----------
-
+after_migrate = "harro.harro.custom_field.create_custom_fields_on_migrate"
 # application home page (will override Website Settings)
 # home_page = "login"
 
