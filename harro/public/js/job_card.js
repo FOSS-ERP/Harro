@@ -11,7 +11,8 @@ frappe.ui.form.on("Job Card", {
                 method: "harro.harro.docevents.job_card.resume_unproductive_log",
                 args : {
                     to_time : frappe.datetime.now_datetime(),
-                    job_card : frm.doc.name
+                    job_card : frm.doc.name,
+                    employees : frm.doc.employee
                 },
                 callback:(r)=>{
                      const args = {
@@ -75,7 +76,8 @@ frappe.ui.form.on("Job Card", {
                     activity_type : data.activity_type,
                     from_time : frappe.datetime.now_datetime(),
                     project : data.project,
-                    task : data.task
+                    task : data.task,
+                    employee : frm.doc.employee
                 }
                 frappe.call({
                     method: "harro.harro.docevents.job_card.update_unproductive_log",
