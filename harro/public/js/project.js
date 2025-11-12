@@ -79,35 +79,31 @@ function renderSpeedometer(frm, set) {
     const ctx = document.getElementById(`speed_chart_${index}_${frm.doc.name}`);
     if (!ctx) return;
 
-    // Determine actual arc color based on percentage
     let actualColor;
-    if (percentage < 80) actualColor = "#2ecc71";     // Green
+    if (percentage < 80) actualColor = "#2ecc71"; // Green
     else if (percentage < 90) actualColor = "#f1c40f"; // Yellow
-    else if (percentage <= 100) actualColor = "#e67e22"; // Orange
-    else actualColor = "#e74c3c";                     // Red
+    else if (percentage <= 100) actualColor = "#FFA500"; // Orange
+    else actualColor = "#e74c3c"; // Red
 
-    // Planned zone color bands (Green → Yellow → Orange → Red)
     const data = {
         datasets: [
             {
-                // Planned zones
-                data: [40, 5, 5, 50], // relative segments for visual proportion
-                backgroundColor: ["#2ecc71", "#f1c40f", "#e67e22", "#e74c3c"],
+                data: [40, 5, 5, 50],
+                backgroundColor: ["#2ecc71", "#f1c40f", "#FFA500", "#e74c3c"],
                 borderWidth: 0,
                 circumference: 180,
                 rotation: 270,
-                cutout: "75%",
+                cutout: "70%",
             },
             {
-                // Actual arc
-                data: [percentage, Math.abs(200 - percentage)],
+                data: [percentage, 200 - percentage],
                 backgroundColor: [actualColor, "rgba(0,0,0,0)"],
                 borderWidth: 0,
                 circumference: 180,
-                rotation:270,
-                cutout: "75%",
-            }
-        ]
+                rotation: 270,
+                cutout: "70%",
+            },
+        ],
     };
 
     const options = {
@@ -116,19 +112,56 @@ function renderSpeedometer(frm, set) {
         plugins: {
             legend: { display: false },
             tooltip: { enabled: false },
+            needle: {
+                radiusPercentage: 1.2,
+                widthPercentage: 3,
+                lengthPercentage: 80,
+                color: "#000",
+            },
         },
     };
 
-    // Prevent duplicate charts
+    // Destroy old chart
     if (frm[`_speed_chart_${index}`]) frm[`_speed_chart_${index}`].destroy();
+
+    // Custom Needle Plugin
+    const gaugeNeedle = {
+        id: "needle",
+        afterDatasetDraw(chart) {
+            const { ctx, chartArea: { width, height, top } } = chart;
+            const needleValue = percentage > 200 ? 200 : percentage;
+            const angle = (Math.PI * (needleValue / 200)) - Math.PI; // 0-200 mapped to 180°
+            const cx = width / 2;
+            const cy = height - 10;
+
+            const length = height * 0.65;
+            const needleX = cx + length * Math.cos(angle);
+            const needleY = cy + length * Math.sin(angle);
+
+            // Draw needle
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(needleX, needleY);
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "#111";
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(cx, cy, 5, 0, 2 * Math.PI);
+            ctx.fillStyle = "#111";
+            ctx.fill();
+            ctx.restore();
+        },
+    };
 
     frm[`_speed_chart_${index}`] = new Chart(ctx, {
         type: "doughnut",
         data: data,
-        options: options
+        options: options,
+        plugins: [gaugeNeedle],
     });
 
+    // Value label
     document.getElementById(`speed_value_${index}_${frm.doc.name}`).innerHTML =
-        `${percentage.toFixed(1)}%<br>(${actual || 0} / ${planned || 0} hrs)`;
+        `<b>${percentage.toFixed(1)}%</b><br>(${actual || 0} / ${planned || 0} hrs)`;
 }
-
