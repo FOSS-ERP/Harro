@@ -102,3 +102,29 @@ def calculate_timesheet_hours(project):
             if field_mapping.get(row.name):
                 frappe.db.set_value("Project", project, field_mapping.get(row.name), 0)
 
+@frappe.whitelist()
+def get_timesheet_working_hours(name):
+    doc = frappe.get_doc("Project", name)
+    fielddetails = frappe.db.get_all("Activity Type", fields=["custom_update_to_project_field", "custom_planned_hours_field_name", "name"])
+    dataset = []
+    count = 0 
+    for row in fielddetails:
+        if row.get("custom_update_to_project_field") and row.get("custom_planned_hours_field_name"):
+            dataset.append({
+                "label": row.get("name"),
+                "planned": doc.get(row.get("custom_update_to_project_field")),
+                "actual": doc.get(row.get("custom_planned_hours_field_name")),
+                "index": count
+            })
+            count += 1
+    return dataset
+
+@frappe.whitelist() 
+def get_activity():
+    fielddetails = frappe.db.get_all("Activity Type", fields=["custom_update_to_project_field", "custom_planned_hours_field_name", "name"])
+    activity_list = []
+    for row in fielddetails:
+        if row.get("custom_update_to_project_field") and row.get("custom_planned_hours_field_name"):
+            activity_list.append(row.get("name"))
+        
+    return activity_list
